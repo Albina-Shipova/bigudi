@@ -28,6 +28,8 @@ function renderServices() {
 $('#service-search').addEventListener('input',()=>{serviceLimit=8;renderServices();});
 $('#more-services').addEventListener('click',()=>{serviceLimit+=12;renderServices();});
 renderServices();
+document.querySelectorAll('[data-category-link]').forEach(link=>link.addEventListener('click',()=>{category=link.dataset.categoryLink;serviceLimit=8;$('#service-search').value='';renderServices();}));
+$('#hero-search-form').addEventListener('submit',e=>{e.preventDefault();$('#service-search').value=$('#hero-search-input').value;serviceLimit=8;renderServices();$('#services').scrollIntoView({block:'start'});$('#service-search').focus({preventScroll:true});});
 let allTeam = false;
 function renderTeam() {
  $('#team-grid').innerHTML = salon.masters.slice(0,allTeam?12:4).map(m=>`<article class="master-card"><div class="master-photo">${m.image?`<img src="${esc(m.image)}" alt="${esc(m.name)}" loading="lazy" width="400" height="500">`:`<span aria-label="Фотография отсутствует">${esc(m.name.split(' ').map(s=>s[0]).slice(0,2).join(''))}</span>`}<span class="master-rating">★ ${esc(m.rating)} <span>(${esc(m.count)})</span></span></div><h3>${esc(m.name)}</h3><p class="master-role">${esc(m.role)}</p><a class="master-link" href="${esc(m.url)}" target="_blank" rel="noopener" aria-label="Профиль и запись: ${esc(m.name)}">Профиль и запись ↗</a></article>`).join('');
