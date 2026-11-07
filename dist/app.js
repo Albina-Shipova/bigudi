@@ -136,7 +136,8 @@ function updateReviewControls() {
  reviewsNext.disabled = reviewsTrack.scrollLeft + reviewsTrack.clientWidth >= reviewsTrack.scrollWidth - 2;
 }
 function scrollReviews(direction) {
- const card = reviewsTrack.firstElementChild;
+ const first = reviewsTrack.firstElementChild;
+ const card = first && getComputedStyle(first).display === 'contents' ? first.firstElementChild : first;
  if (!card) return;
  reviewsTrack.scrollBy({left: direction * (card.getBoundingClientRect().width + parseFloat(getComputedStyle(reviewsTrack).columnGap)), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
 }

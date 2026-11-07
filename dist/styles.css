@@ -253,3 +253,10 @@ body{padding-top:106px}
 @media(max-width:760px){
 .hero-search,.why-section,.footer,.back-to-top{display:none}
 }
+
+/* Мобильная версия: отзывы по одному на экран, листаются */
+@media(max-width:760px){
+.reviews-grid{align-items:stretch;scroll-snap-type:x mandatory}
+.reviews-grid>.reviews-column{display:contents}
+.reviews-grid .reviews-column .review-card{flex:0 0 100%;width:100%;scroll-snap-align:start}
+}
