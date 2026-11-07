@@ -246,3 +246,52 @@ updateBackToTop();
 backToTop.addEventListener('click', () => {
  window.scrollTo({top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth'});
 });
+// Появление блоков при прокрутке
+(() => {
+ const root = document.documentElement;
+ if (!root.classList.contains('rv') || !('IntersectionObserver' in window)) { root.classList.remove('rv'); return; }
+ const mark = (sel, cls) => document.querySelectorAll(sel).forEach(el => el.classList.add(cls));
+ mark('.hero-visual, .why-card, .direction-card, .price-layout > aside, .price-content, .salon-photo, .master-card, .gallery-item, .reviews-column, .gift-card, .contact-map', 'rv-tile');
+ mark('.hero-visual > img, .why-interior, .direction-card > img, .salon-photo > img, .master-photo img', 'rv-photo');
+ mark('h1, h2', 'rv-head');
+ mark('.hero-intro, .mini-heading, .quick-service, .all-directions, .section-heading p, .salon-copy p, .salon-copy .text-link, .team-controls, .gallery-tabs, .review-score, .review-intro .text-link, .reviews-controls, .gift-copy > p, .gift-values, #gift-link, .why-card-copy p, .location, .contacts-section address > *, .contact-socials, .contacts-section .button, .footer > *', 'rv-text');
+ mark('.fact-icon, .circle-arrow, .chat-pill, .rating-pill, .hero-location, .hero-search', 'rv-pop');
+ // сторона появления: левая половина экрана — слева, правая — справа
+ document.querySelectorAll('.rv-tile, .rv-text, .rv-head, .rv-photo').forEach(el => {
+  const r = el.getBoundingClientRect(); if (!r.width) return;
+  const left = (r.left + r.width / 2) < innerWidth / 2;
+  if (el.matches('.rv-photo')) el.classList.toggle('rv-from-l', left); else el.style.setProperty('--rv-s', left ? -1 : 1);
+ });
+ // заголовки — построчно
+ document.querySelectorAll('.rv-head').forEach(h => {
+  const parts = h.innerHTML.split(/<br\s*\/?>/i);
+  h.innerHTML = parts.map((p, i) => `<span class="rv-line" style="--rv-l:${i*90}ms"><span>${p}</span></span>`).join('<br>');
+ });
+ // волна внутри общей сетки
+ const groups = new Map();
+ document.querySelectorAll('.rv-tile, .rv-text').forEach(el => {
+  const p = el.parentElement; const i = groups.get(p) || 0; groups.set(p, i + 1);
+  el.style.setProperty('--rv-d', `${Math.min(i, 6) * 90}ms`);
+ });
+ const show = el => {
+  io.unobserve(el); el.classList.add('is-in');
+  setTimeout(() => el.classList.remove('rv-tile','rv-text','rv-pop'), 2200);
+  const score = el.matches('.review-score') && el.querySelector('strong');
+  if (score && score.firstChild.nodeType === 3) {
+   const node = score.firstChild, t0 = performance.now();
+   const tick = t => { const k = Math.min((t - t0) / 1200, 1); node.nodeValue = (4.9 * (1 - (1 - k) ** 3)).toFixed(1).replace('.', ','); if (k < 1) requestAnimationFrame(tick); };
+   requestAnimationFrame(tick);
+  }
+ };
+ const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) show(e.target);  }), {threshold: .12, rootMargin: '0px 0px -6% 0px'});
+ const pending = new Set(document.querySelectorAll('.rv-tile, .rv-head, .rv-text, .rv-pop'));
+ pending.forEach(el => io.observe(el));
+ // страховка: при быстрой прокрутке блок может проскочить экран между кадрами
+ let ticking = false;
+ addEventListener('scroll', () => { if (ticking) return; ticking = true; setTimeout(() => { ticking = false;
+  pending.forEach(el => { if (el.classList.contains('is-in')) return pending.delete(el); const r = el.getBoundingClientRect(); if (r.height && r.bottom < 0) { pending.delete(el); show(el); } });
+  document.querySelectorAll('.rv-photo:not(.is-in)').forEach(img => { if (img.parentElement.getBoundingClientRect().bottom < 0) { img.classList.add('is-in'); setTimeout(() => img.classList.remove('rv-photo'), 2200); } });
+ }, 100); }, {passive: true});
+ // фото со скрытым clip-path наблюдатель «не видит» — следим за родителем
+ document.querySelectorAll('.rv-photo').forEach(img => { const p = img.parentElement; const o = new IntersectionObserver(es => { if (es.some(x => x.isIntersecting)) { o.disconnect(); img.classList.add('is-in'); setTimeout(() => img.classList.remove('rv-photo'), 2200); } }, {threshold: .12}); o.observe(p); });
+})();
