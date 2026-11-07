@@ -178,3 +178,48 @@ body{padding-top:106px}
 @media(max-width:480px){.gallery-grid{gap:14px}.gallery-grid .gallery-item{flex-basis:76%}}
 
 .team-grid.is-settling,.reviews-grid.is-settling,.gallery-grid.is-settling{scroll-snap-type:none}
+
+/* Compact benefit cards with portrait interior panels. */
+.why-section{row-gap:24px;align-items:stretch}
+.why-card{min-height:210px}
+.why-card>p{margin-top:24px;padding-top:0}
+.why-card-photo{display:grid;grid-template-columns:minmax(0,1fr) 38%;padding:0;overflow:hidden}
+.why-card-photo .why-interior{grid-column:2;grid-row:1;display:block;width:100%;height:100%;min-height:210px;object-fit:cover}
+.why-interior-reception{object-position:58% 65%}
+.why-interior-mirror{object-position:50% 50%}
+.why-card-copy{grid-column:1;grid-row:1;position:relative;padding:23px 20px;display:flex;flex-direction:column;min-width:0}
+.why-card-copy h3{padding-right:0}
+.why-card-copy p{margin-top:20px;padding-top:0;max-width:none}
+.why-card-copy .fact-icon{display:none}
+@media(min-width:761px) and (max-width:1100px){.why-card-photo{grid-template-columns:minmax(0,1fr) 32%}.why-card-copy{padding:20px 16px}}
+@media(min-width:481px) and (max-width:760px){.why-card-photo{grid-template-columns:1fr}.why-card-photo .why-interior{grid-column:1;grid-row:1;height:160px;min-height:0;object-position:50% 60%}.why-card-copy{grid-row:2;padding:18px}.why-card{min-height:0}.why-card>p{margin-top:24px}}
+@media(max-width:480px){.why-section{gap:14px}.why-card{min-height:185px}.why-card-photo{padding:0;grid-template-columns:minmax(0,1fr) 38%}.why-card-photo .why-interior{min-height:220px}.why-card-copy{padding:20px 16px}}
+
+.why-interior-salon{object-position:55% 50%}
+
+/* Center benefit copy beside the interior photographs. */
+.why-card-copy{justify-content:center}
+.why-card-copy h3{font-size:24px;line-height:1.18;letter-spacing:-.4px}
+.why-card-copy p{flex:0 0 auto;margin-top:18px}
+@media(max-width:1100px){.why-card-copy h3{font-size:21px}}
+@media(max-width:480px){.why-card-copy h3{font-size:22px}.why-card-copy p{margin-top:14px}}
+/* Clickable interior panels; crop the date strip from the displayed photo. */
+.why-photo-button{grid-column:2;grid-row:1;position:relative;display:block;align-self:stretch;min-width:0;min-height:210px;overflow:hidden;padding:0;cursor:zoom-in;background:var(--lilac-light)}
+.why-photo-button .why-interior{position:absolute;inset:0;width:100%;height:109%;min-height:0;object-fit:cover;clip-path:inset(0 0 8% 0)}
+.why-photo-button:focus-visible{outline-offset:-4px}
+.lightbox-interior>img{clip-path:inset(0 0 8% 0 round 12px)}
+@media(min-width:481px) and (max-width:760px){.why-photo-button{grid-column:1;grid-row:1;min-height:160px;height:160px}.why-photo-button .why-interior{height:109%;min-height:0}}
+@media(max-width:480px){.why-photo-button{min-height:220px}}
+
+/* Match the fixed menu to the outer site container at every breakpoint. */
+.header{width:calc(100% - 80px);max-width:1440px}
+@media(max-width:1200px){.header{width:calc(100% - 50px)}}
+@media(max-width:760px){.header{width:calc(100% - 32px)}}
+@media(max-width:480px){.header{width:calc(100% - 20px)}}
+/* A soft blue panel for the salon introduction. */
+.salon-section{background:var(--blue-light);border-radius:28px;margin:20px 20px 0;padding-block:60px}
+.salon-section>.wrap{width:calc(100% - 72px)}
+.salon-photo img.salon-detail{border-color:var(--blue-light)}
+@media(max-width:1200px){.salon-section>.wrap{width:calc(100% - 40px)}}
+@media(max-width:760px){.salon-section{margin:10px 12px 0;border-radius:20px;padding-block:45px}.salon-section>.wrap{width:calc(100% - 30px)}}
+@media(max-width:480px){.salon-section{margin:10px 8px 0;border-radius:18px;padding-block:35px}.salon-section>.wrap{width:calc(100% - 24px)}}

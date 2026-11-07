@@ -66,10 +66,19 @@ function renderGallery(){
 }
 document.querySelectorAll('[data-gallery]').forEach(b=>b.addEventListener('click',()=>{galleryType=b.dataset.gallery;photoIndex=0;renderGallery();galleryTrack.scrollTo({left:0,behavior:"instant"});updateGalleryControls();}));
 const lightbox=$('#lightbox');
-function showPhoto(){const photos=salon[galleryType];lightbox.querySelector('img').src=photos[photoIndex];lightbox.querySelector('img').alt=`${galleryLabels[galleryType]}, фото ${photoIndex+1}`;$('#lightbox-count').textContent=`${photoIndex+1} / ${photos.length}`;}
-$('#gallery-grid').addEventListener('click',e=>{const b=e.target.closest('[data-photo]');if(!b)return;photoIndex=Number(b.dataset.photo);showPhoto();lightbox.showModal();});
+let benefitPhotos = null;
+function showPhoto(){const photos=benefitPhotos || salon[galleryType];lightbox.classList.toggle('lightbox-interior', Boolean(benefitPhotos) || galleryType === 'interiors');lightbox.querySelector('img').src=photos[photoIndex];lightbox.querySelector('img').alt=`${galleryLabels[galleryType]}, фото ${photoIndex+1}`;$('#lightbox-count').textContent=`${photoIndex+1} / ${photos.length}`;}
+$('#gallery-grid').addEventListener('click',e=>{const b=e.target.closest('[data-photo]');if(!b)return;benefitPhotos=null;photoIndex=Number(b.dataset.photo);showPhoto();lightbox.showModal();});
+const benefitButtons = [...document.querySelectorAll('.why-photo-button')];
+benefitButtons.forEach((button, index) => button.addEventListener('click', () => {
+ benefitPhotos = benefitButtons.map(item => item.querySelector('img').getAttribute('src'));
+ photoIndex = index;
+ showPhoto();
+ lightbox.querySelector('img').alt = button.getAttribute('aria-label');
+ lightbox.showModal();
+}));
 $('.lightbox-close').addEventListener('click',()=>lightbox.close());
-function movePhoto(step){photoIndex=(photoIndex+step+salon[galleryType].length)%salon[galleryType].length;showPhoto();}
+function movePhoto(step){photoIndex=(photoIndex+step+(benefitPhotos || salon[galleryType]).length)%(benefitPhotos || salon[galleryType]).length;showPhoto();}
 $('.lightbox-prev').addEventListener('click',()=>movePhoto(-1));$('.lightbox-next').addEventListener('click',()=>movePhoto(1));
 lightbox.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')movePhoto(-1);if(e.key==='ArrowRight')movePhoto(1);});
 lightbox.addEventListener('click',e=>{if(e.target===lightbox)lightbox.close();});
