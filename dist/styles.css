@@ -238,3 +238,18 @@ body{padding-top:106px}
 .rv .rv-text.is-in{opacity:1;translate:0 0}
 .rv .rv-pop{opacity:0;scale:.4;transition:opacity .4s ease,scale .7s cubic-bezier(.34,1.7,.5,1);transition-delay:calc(var(--rv-d,0ms) + 380ms)}
 .rv .rv-pop.is-in{opacity:1;scale:1}
+
+/* Адаптив: плавающие кнопки и области нажатия */
+@media(min-width:481px){.footer{padding-bottom:100px}}
+@media(max-width:480px){
+.back-to-top{display:none}
+.service-book{position:relative}
+.service-book::after{content:"";position:absolute;inset:-9px}
+.master-link,.text-link{padding-block:10px 4px}
+
+}
+
+/* Мобильная версия: убраны поиск на первом экране, блок «Всё для себя», футер */
+@media(max-width:760px){
+.hero-search,.why-section,.footer,.back-to-top{display:none}
+}
